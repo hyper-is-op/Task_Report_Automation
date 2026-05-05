@@ -83,7 +83,7 @@ original_URL_sheet_name     → Sheets API URL for fetching sheet names
 original_URL_full_data      → Sheets API URL for fetching all grid data
 ```
 
-> The Spreadsheet ID is embedded in all these URLs — replace `1Fnatbx7G75Z3AhHqcSKcjgxVH7DPO-09Jw6fzyC85rU` with your own spreadsheet's ID.
+> The Spreadsheet ID is embedded in all these URLs — replace `1Fnatbxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx6fzyC85rU` with your own spreadsheet's ID.
 
 ### 3. Set up credentials
 
