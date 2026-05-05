@@ -131,7 +131,7 @@ The workflow automatically creates a new sheet for the current month if one does
 - Returns each entry as a separate Telegram message
 
 ### `get entry by date`
-- Parses the form date input (`YYYY-MM-DD` → `M/D/YYYY` for matching)
+- Parses the form date input (`YYYY-MM-DD` → `M/D/YYYY` for matching, Google Sheet Default linked with Google Account Default)
 - Reads the sheet for the corresponding month
 - Normalizes date formats before comparing to handle leading-zero differences
 - Sends either an "entry found" or "not found" Telegram message
