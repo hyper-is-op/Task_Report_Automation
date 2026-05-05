@@ -1,0 +1,947 @@
+{
+  "name": "Task_Report_Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        -112
+      ],
+      "id": "ab5f67e5-d08c-412e-b767-db349e35f0fa",
+      "name": "Telegram Trigger",
+      "webhookId": "5217c317-a962-44d7-b321-32348529217d",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e5788c56-b905-411b-a0b5-514d341d69cd",
+                    "leftValue": "={{$json.data.Action.toLowerCase()}}",
+                    "rightValue": "get last 10 entries",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a7fd3462-d79e-4e50-946f-562ecf882ec1",
+                    "leftValue": "={{$json.data.Action.toLowerCase()}}",
+                    "rightValue": "get entry by date",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "702b3c9d-a63e-4bbb-aa92-deddb37c1dcc",
+                    "leftValue": "={{$json.data.Action.toLowerCase()}}",
+                    "rightValue": "post",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json.data.Action.toLowerCase()}}",
+                    "rightValue": "insert or update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "a4b83350-aa88-4069-8d24-0554e1c8f43a"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "057519eb-8bb1-4f96-a0a6-49c4c3d0fb37",
+                    "leftValue": "={{$json.data.Action.toLowerCase()}}",
+                    "rightValue": "exit",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        -112
+      ],
+      "id": "855ea2e9-ec43-40e0-82d6-0f65f481cdac",
+      "name": "Switch Case"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('URL node').item.json.original_URL_shared_link }}",
+          "__regex": "https:\\/\\/(?:drive|docs)\\.google\\.com(?:\\/.*|)\\/d\\/([0-9a-zA-Z\\-_]+)(?:\\/.*|)"
+        },
+        "title": "={{ $('Format Form Input \"insert or update\"').item.json.sheetName }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1248,
+        208
+      ],
+      "id": "4fc87e4e-93c4-4dcc-bd47-eab655faf1ed",
+      "name": "Create sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XPyygFGTm8sJKE8E",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "054ecd2c-97f0-4dfa-b910-4341b8e441d9",
+              "name": "Date(M/D/YYYY)",
+              "value": "={{ $('Format Form Input \"insert or update\"').item.json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "67774f3b-378c-42c6-8647-db0759063e47",
+              "name": "Task",
+              "value": "={{ $('Format Form Input \"insert or update\"').item.json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1472,
+        112
+      ],
+      "id": "c2700df3-7b3b-45e4-be2a-fa07a428c34e",
+      "name": "Edit Fields",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('URL node').item.json.original_URL_shared_link }}",
+          "__regex": "https:\\/\\/(?:drive|docs)\\.google\\.com(?:\\/.*|)\\/d\\/([0-9a-zA-Z\\-_]+)(?:\\/.*|)"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $('Format Form Input \"insert or update\"').item.json.sheetName }}",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1680,
+        112
+      ],
+      "id": "baafefc2-7f47-445e-9c79-6b8d6bbeef02",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XPyygFGTm8sJKE8E",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "spaceId": "={{ $('URL node').item.json[\"Google Chat Space ID\"] }}",
+        "messageUi": {
+          "text": "={{ $('URL node').item.json.original_URL_shared_link }}"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleChat",
+      "typeVersion": 1,
+      "position": [
+        864,
+        -64
+      ],
+      "id": "1ed7e8b2-1fe0-46a4-832e-e50e97f8ab66",
+      "name": "Create a message",
+      "webhookId": "28903681-51c2-49a2-a788-4d0c1b9413bd",
+      "credentials": {
+        "googleChatOAuth2Api": {
+          "id": "hCPvYMVemLtKD5vS",
+          "name": "Chat account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "09c164e2-7147-4a9e-969a-5e9ccb71dfae",
+              "name": "Telegram Chat ID",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "042ba86d-32be-4353-bb3b-ed054bdfb282",
+              "name": "original_URL_shared_link",
+              "value": "https://docs.google.com/spreadsheets/d/1Fnatbx7G75Z3AhHqcSKcjgxVH7DPO-09Jw6fzyC85rU/edit?usp=sharing",
+              "type": "string"
+            },
+            {
+              "id": "b1f91e2a-328d-4154-b75c-9a043ba4e569",
+              "name": "original_URL_copied_link",
+              "value": "https://docs.google.com/spreadsheets/d/1Fnatbx7G75Z3AhHqcSKcjgxVH7DPO-09Jw6fzyC85rU/edit?gid=1924581600#gid=1924581600",
+              "type": "string"
+            },
+            {
+              "id": "da09cee5-ee94-4531-aa7c-c256936efe2f",
+              "name": "Google Chat Space ID",
+              "value": "spaces/AAAA_CW_OW8",
+              "type": "string"
+            },
+            {
+              "id": "1520b557-b0e1-49e1-a49a-fb8179daeb34",
+              "name": "Blank",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f75d1a49-5d03-4ce0-b498-ed71fb63749b",
+              "name": "original_URL_sheet_name",
+              "value": "https://sheets.googleapis.com/v4/spreadsheets/1Fnatbx7G75Z3AhHqcSKcjgxVH7DPO-09Jw6fzyC85rU?fields=sheets.properties",
+              "type": "string"
+            },
+            {
+              "id": "7aabfe20-115e-4ca6-b728-00872d22c85d",
+              "name": "original_URL_full_data",
+              "value": "https://sheets.googleapis.com/v4/spreadsheets/1Fnatbx7G75Z3AhHqcSKcjgxVH7DPO-09Jw6fzyC85rU?includeGridData=true",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        -112
+      ],
+      "id": "53374b1f-33ce-4d1f-b0cc-656122d24a60",
+      "name": "URL node"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "message": "format (or do nothing for 5 min to exit automatically)\n{insert or get or post}\n{Date}\n{Task}",
+        "responseType": "customForm",
+        "defineForm": "json",
+        "jsonOutput": "[\n  {\n    \"fieldLabel\": \"Action\",\n    \"fieldType\": \"dropdown\",\n    \"placeholder\": \"Select an action\",\n    \"requiredField\": true,\n    \"fieldOptions\": {\n      \"values\": [\n        { \"option\": \"get last 10 entries\" },\n        { \"option\": \"get entry by date\" },\n        { \"option\": \"post\" },\n        { \"option\": \"insert or update\" },\n        { \"option\": \"exit\" }\n      ]\n    }\n  },\n  {\n    \"fieldLabel\": \"Date\",\n    \"fieldType\": \"date\",\n    \"requiredField\": false\n  },\n  {\n    \"fieldLabel\": \"Text\",\n    \"fieldType\": \"textarea\",\n    \"placeholder\": \"Enter your text\",\n    \"requiredField\": false\n  }\n]",
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 5,
+              "resumeUnit": "minutes"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        528,
+        -304
+      ],
+      "id": "f6dca70b-899d-4b52-bfe9-a6d149c5f347",
+      "name": "Options to USER",
+      "webhookId": "510cbd76-ce8b-4248-91ac-29fed38c5eb7",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.original_URL_full_data }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleSheetsOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        -304
+      ],
+      "id": "101a58ce-6b12-4795-a3d9-7798a0edae18",
+      "name": "Get all sheet name",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XPyygFGTm8sJKE8E",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const sheets = $('Get all sheet name').first().json.sheets;\n\nconst latestSheet = sheets\n  .map(s => ({\n    title: s.properties.title,\n    date: new Date(s.properties.title)\n  }))\n  .filter(s => !isNaN(s.date))\n  .sort((a, b) => b.date - a.date)[0];\n\nreturn [{ json: { sheetName: latestSheet.title } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        -416
+      ],
+      "id": "709f7673-0b0a-471b-ad3d-671461577251",
+      "name": "Get latest sheet name"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('URL node').item.json.original_URL_shared_link }}",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "={{ $json.sheetName}}"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        -416
+      ],
+      "id": "d87a906e-9f47-4f9e-a165-f633dc23c21a",
+      "name": "Get latest sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XPyygFGTm8sJKE8E",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(r => r.json);\nconst withDates = rows\n  .filter(r => r['Date(M/D/YYYY)'] && r['Date(M/D/YYYY)'].toString().trim() !== '')\n  .map(r => ({ ...r, _parsed: new Date(r['Date(M/D/YYYY)']) }))\n  .filter(r => !isNaN(r._parsed))\n  .sort((a, b) => b._parsed - a._parsed);\n\nif (withDates.length === 0) {\n  return [{ json: { error: 'No valid date entries found' } }];\n}\n\nconst latestDate = withDates[0]._parsed;\nconst tenDaysAgo = new Date(latestDate);\ntenDaysAgo.setDate(tenDaysAgo.getDate() - 9);\n\nconst last10Days = withDates.filter(r => r._parsed >= tenDaysAgo);\n\nreturn last10Days.map(r => ({\n  json: {\n    date: r['Date(M/D/YYYY)'],\n    task: r['Task'],\n    totalFound: last10Days.length\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -416
+      ],
+      "id": "200abd89-1ebf-414d-b754-9291b17e88c4",
+      "name": "Get last 10 entires if possible"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.data;\n\nconst action = data.Action.toLowerCase().trim();\n\n// Date comes as \"2026-04-18\" from date picker\nconst [yyyy, mm, dd] = data.Date.split('-');\nconst formattedDate = `${mm}/${dd}/${yyyy}`; // \"04/18/2026\" for Google Sheets\n\nconst date = new Date(`${yyyy}-${mm}-${dd}`);\nconst monthName = date.toLocaleString('default', { month: 'long' });\nconst sheetName = `${monthName} ${yyyy}`; // \"April 2026\"\n\nreturn [{\n  json: {\n    action: action,\n    date: formattedDate,\n    text: data.Text || '',\n    sheetName: sheetName\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        -224
+      ],
+      "id": "25848bb1-2446-4fec-832e-f46ef0146e69",
+      "name": "Format Form Input \"get by date\""
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.data;\nconst action = data.Action.toLowerCase().trim();\nconst [yyyy, mm, dd] = data.Date.split('-');\nconst formattedDate = `${parseInt(mm)}/${parseInt(dd)}/${yyyy}`; // \"5/5/2026\"\nconst date = new Date(`${yyyy}-${mm}-${dd}`);\nconst monthName = date.toLocaleString('default', { month: 'long' });\nconst sheetName = `${monthName} ${yyyy}`;\nreturn [{\n  json: {\n    action: action,\n    date: formattedDate,\n    text: data.Text || '',\n    sheetName: sheetName\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        128
+      ],
+      "id": "24b8d12c-0ab8-42b8-a888-cefc1be569f9",
+      "name": "Format Form Input \"insert or update\""
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('URL node').first().json['Telegram Chat ID'] }}",
+        "text": "={{ $json.error }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        -208
+      ],
+      "id": "0aa9613f-e33c-4872-8ce5-ec49e94cdd9c",
+      "name": "Entry not found Message",
+      "webhookId": "148e833d-0932-483e-be7b-58a43fbcd779",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('URL node').first().json['Telegram Chat ID'] }}",
+        "text": "={{ $json.date }}\n{{ $json.task }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1664,
+        -240
+      ],
+      "id": "bba098f7-cb41-4500-89c2-47a11d53e6bf",
+      "name": "Entry found message",
+      "webhookId": "148e833d-0932-483e-be7b-58a43fbcd779",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "={{ $('URL node').item.json.original_URL_shared_link }}",
+          "__regex": "https:\\/\\/(?:drive|docs)\\.google\\.com(?:\\/.*|)\\/d\\/([0-9a-zA-Z\\-_]+)(?:\\/.*|)"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.sheetName }}",
+          "mode": "name"
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        -224
+      ],
+      "id": "e3da513b-6650-4449-ac34-52b177e275e4",
+      "name": "Get entry by date",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XPyygFGTm8sJKE8E",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('URL node').item.json[\"Telegram Chat ID\"] }}",
+        "text": "=Success\n\nDate(M/D/YYYY):-\n{{ $json[\"Date(M/D/YYYY)\"] }}\nTask:-\n{{ $json.Task }}\n\n\n{{ $('URL node').item.json.original_URL_shared_link }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1888,
+        112
+      ],
+      "id": "28dc8bed-48d3-4708-b5af-ed02db32dd03",
+      "name": "Report Updated Message",
+      "webhookId": "1b195d20-2f34-4f7d-922d-4025ed33574c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('URL node').item.json[\"Telegram Chat ID\"] }}",
+        "text": "Task Report Posted in \"Team Discussion\"",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -64
+      ],
+      "id": "65664e41-d3a9-4eb4-b9f3-ebc39c21790d",
+      "name": "Task Report Posted Message",
+      "webhookId": "d992508c-7601-413f-b5a7-da8bf47e165a",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.data.Action }}\nBye!!!!!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        864,
+        352
+      ],
+      "id": "fe146d8a-9007-4261-b7b7-e870456f027c",
+      "name": "Exit Message",
+      "webhookId": "f4020652-ee58-400b-b2f0-3687a9ab8b68",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(r => r.json);\nconst targetDate = $('Format Form Input \"get by date\"').first().json.date;\n\nconst normalize = (d) => {\n  const [mm, dd, yyyy] = d.toString().trim().split('/');\n  return `${parseInt(mm)}/${parseInt(dd)}/${yyyy}`;\n};\n\nconst normalizedTarget = normalize(targetDate);\n\nconst matched = rows.filter(r => {\n  const cellDate = r['Date(M/D/YYYY)'];\n  if (!cellDate) return false;\n  return normalize(cellDate.toString()) === normalizedTarget;\n});\n\nif (matched.length === 0) {\n  return [{ json: { error: `No entries found for date: ${targetDate}` } }];\n}\n\nreturn matched.map(r => ({\n  json: {\n    date: r['Date(M/D/YYYY)'],\n    task: r['Task']\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -240
+      ],
+      "id": "a1115749-93d1-4842-82c1-429d50e4dc36",
+      "name": "Date Formatter"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('URL node').first().json['Telegram Chat ID'] }}",
+        "text": "={{ $json.date }}\n{{ $json.task }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1456,
+        -416
+      ],
+      "id": "fba642f4-34f0-47c5-a37d-b07910e3a915",
+      "name": "Message of Last 10 Entires",
+      "webhookId": "148e833d-0932-483e-be7b-58a43fbcd779",
+      "credentials": {
+        "telegramApi": {
+          "id": "ndgm5u0U3D1YSKRW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $('URL node').item.json.original_URL_shared_link }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "={{ $json.sheetName }}",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        128
+      ],
+      "id": "8158b87f-baf2-45d2-a0ee-19b0b34c15d9",
+      "name": "Checking to sheet Exists",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "XPyygFGTm8sJKE8E",
+          "name": "Google Sheets account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "pinData": {
+    "Options to USER": [
+      {
+        "json": {
+          "data": {
+            "Action": "post",
+            "Date": "",
+            "Text": ""
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "URL node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Case": {
+      "main": [
+        [
+          {
+            "node": "Get latest sheet name",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Form Input \"get by date\"",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Form Input \"insert or update\"",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Exit Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a message": {
+      "main": [
+        [
+          {
+            "node": "Task Report Posted Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "URL node": {
+      "main": [
+        [
+          {
+            "node": "Get all sheet name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Options to USER": {
+      "main": [
+        [
+          {
+            "node": "Switch Case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get all sheet name": {
+      "main": [
+        [
+          {
+            "node": "Options to USER",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get latest sheet name": {
+      "main": [
+        [
+          {
+            "node": "Get latest sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get latest sheet": {
+      "main": [
+        [
+          {
+            "node": "Get last 10 entires if possible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get last 10 entires if possible": {
+      "main": [
+        [
+          {
+            "node": "Message of Last 10 Entires",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Form Input \"get by date\"": {
+      "main": [
+        [
+          {
+            "node": "Get entry by date",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Form Input \"insert or update\"": {
+      "main": [
+        [
+          {
+            "node": "Checking to sheet Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get entry by date": {
+      "main": [
+        [
+          {
+            "node": "Date Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Entry not found Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Report Updated Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date Formatter": {
+      "main": [
+        [
+          {
+            "node": "Entry found message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Checking to sheet Exists": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Kolkata",
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": -1
+  },
+  "versionId": "a8c1d952-7666-4291-97c5-17f1d4b8ac8d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "be23828d8f450ee199d7a431a91076edd59b9506793bc8387f2581863d31707d"
+  },
+  "id": "V1ScRlJtzSEKU1M9GQkij",
+  "tags": []
+}
